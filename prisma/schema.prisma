@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int               @id @default(autoincrement())
+  email             String            @unique
+  name              String
+  password          String
+  city              String
+  country           String
+  profilePicture    String?
+  notificationToken String?
+  pets              Pet[]             @relation("PetOwner")
+  requests          AdoptionRequest[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model Pet {
+  id           Int     @id @default(autoincrement())
+  name         String
+  breed        String
+  age          Int
+  isVaccinated Boolean @default(false)
+  isSterilized Boolean @default(false)
+  description  String?
+  size         PetSize
+  isAdopted    Boolean @default(false)
+  imageUrl     String?
+  location     String
+
+  owner   User? @relation("PetOwner", fields: [ownerId], references: [id])
+  ownerId Int?
+
+  requests AdoptionRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdoptionRequest {
+  id          Int           @id @default(autoincrement())
+  pet         Pet           @relation(fields: [petId], references: [id])
+  petId       Int
+  user        User          @relation(fields: [userId], references: [id])
+  userId      Int
+  status      RequestStatus @default(PENDING)
+  description String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum PetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
