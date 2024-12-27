@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreatePetDto, UpdatePetDto } from './dto/pet.dto';
 
@@ -49,7 +53,7 @@ export class PetService {
     });
   }
 
-  async remove(id: number, newOwnerId: number) {
+  async adoptPet(id: number, newOwnerId: number) {
     const pet = await this.prisma.pet.findUnique({ where: { id } });
     if (!pet) {
       throw new NotFoundException(`Pet with ID ${id} not found.`);
@@ -60,6 +64,26 @@ export class PetService {
         isAdopted: true,
         ownerId: newOwnerId,
       },
+    });
+  }
+
+  async deleteAdoption(petId: number, userId: number) {
+    const pet = await this.prisma.pet.findUnique({
+      where: { id: petId },
+    });
+
+    if (!pet) {
+      throw new NotFoundException(`Pet with ID ${petId} not found.`);
+    }
+
+    if (pet.ownerId !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to delete this adoption post.',
+      );
+    }
+
+    return this.prisma.pet.delete({
+      where: { id: petId },
     });
   }
 }

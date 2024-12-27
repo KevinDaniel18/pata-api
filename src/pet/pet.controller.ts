@@ -32,7 +32,7 @@ export class PetController {
 
   // Create a new pet
   @UseGuards(JwtAuthGuard)
-  @Post("register")
+  @Post('register')
   async create(@Body() createPetDto: CreatePetDto, @Request() req: any) {
     return this.petService.create(createPetDto, req.user.id);
   }
@@ -47,11 +47,18 @@ export class PetController {
   }
 
   @Patch('setPetToAdopted/:id')
-  async remove(
+  async adoptPet(
     @Param('id', ParseIntPipe) id: number,
     @Body('newOwnerId', ParseIntPipe) newOwnerId: number,
   ) {
-    return this.petService.remove(Number(id), Number(newOwnerId));
+    return this.petService.adoptPet(Number(id), Number(newOwnerId));
   }
-  
+  @UseGuards(JwtAuthGuard)
+  @Delete('deleteAdoptionPost/:id')
+  async deletePet(
+    @Param('id', ParseIntPipe) petId: number,
+    @Request() req: any,
+  ) {
+    return this.petService.deleteAdoption(Number(petId), req.user.id);
+  }
 }

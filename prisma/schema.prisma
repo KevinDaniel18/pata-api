@@ -41,7 +41,7 @@ model Pet {
   imageUrl     String?
   location     String
 
-  owner   User? @relation("PetOwner", fields: [ownerId], references: [id])
+  owner   User? @relation("PetOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId Int?
 
   requests AdoptionRequest[]
@@ -52,7 +52,7 @@ model Pet {
 
 model AdoptionRequest {
   id          Int           @id @default(autoincrement())
-  pet         Pet           @relation(fields: [petId], references: [id])
+  pet         Pet           @relation(fields: [petId], references: [id], onDelete: Cascade)
   petId       Int
   user        User          @relation(fields: [userId], references: [id])
   userId      Int

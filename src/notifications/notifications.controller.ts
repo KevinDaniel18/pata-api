@@ -24,4 +24,14 @@ export class NotificationController {
       expoPushToken,
     );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('disableNotifications')
+  async disableNotifications(@Request() req: any) {
+    if (!req.user.id) {
+      throw new Error('userId is required');
+    }
+
+    return this.notificationService.removeNotificationToken(req.user.id);
+  }
 }

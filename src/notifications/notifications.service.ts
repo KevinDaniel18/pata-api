@@ -49,4 +49,15 @@ export class NotificationsService {
       throw new Error('Error updating notification token');
     }
   }
+
+  async removeNotificationToken(userId: number) {
+    try {
+      return await this.prisma.user.update({
+        where: { id: userId },
+        data: { notificationToken: null },
+      });
+    } catch (error) {
+      throw new Error('Error removing notification token');
+    }
+  }
 }

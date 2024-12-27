@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/guards/auth.guard';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller('user')
 export class UserController {
@@ -35,5 +36,17 @@ export class UserController {
   @Delete('delete')
   async deleteUser(@Request() req: any) {
     return this.userService.removeUserProfile(req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('updateUser')
+  async updateUser(@Request() req: any, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateUser(req.user.id, updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch("remove-profile-picture")
+  async removeProfilePicture(@Request() req: any){
+    return this.userService.removeProfileImage(req.user.id)
   }
 }
