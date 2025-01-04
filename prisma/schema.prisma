@@ -26,6 +26,8 @@ model User {
   requests          AdoptionRequest[]
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+  comments          Comment[]
+  commentLike       CommentLike[]
 }
 
 model Pet {
@@ -46,8 +48,31 @@ model Pet {
 
   requests AdoptionRequest[]
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+}
+
+model Comment {
+  id          Int           @id @default(autoincrement())
+  content     String
+  likes       Int           @default(0)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  pet         Pet           @relation(fields: [petId], references: [id], onDelete: Cascade)
+  petId       Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  commentLike CommentLike[]
+}
+
+model CommentLike {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model AdoptionRequest {
