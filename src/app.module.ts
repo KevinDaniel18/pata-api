@@ -4,8 +4,9 @@ import { PetModule } from './pet/pet.module';
 import { UserModule } from './user/user.module';
 import { AdoptionRequestModule } from './adoptionRequest/adoption-request.module';
 import { CommentsModule } from './comments/comments.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [AuthModule, UserModule, PetModule, AdoptionRequestModule, CommentsModule],
+  imports: [AuthModule, UserModule, PetModule, AdoptionRequestModule, CommentsModule, ChatModule],
 })
 export class AppModule {}

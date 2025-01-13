@@ -28,6 +28,9 @@ model User {
   updatedAt         DateTime          @updatedAt
   comments          Comment[]
   commentLike       CommentLike[]
+  petLike           PetLike[]
+  sentMessages      Message[]         @relation("SentMessages")
+  receivedMessages  Message[]         @relation("ReceivedMessages")
 }
 
 model Pet {
@@ -42,15 +45,25 @@ model Pet {
   isAdopted    Boolean @default(false)
   imageUrl     String?
   location     String
-
-  owner   User? @relation("PetOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId Int?
+  likes        Int     @default(0)
+  owner        User?   @relation("PetOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId      Int?
 
   requests AdoptionRequest[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   comments  Comment[]
+  petLike   PetLike[]
+}
+
+model PetLike {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  pet       Pet      @relation(fields: [petId], references: [id], onDelete: Cascade)
+  petId     Int
+  createdAt DateTime @default(now())
 }
 
 model Comment {
@@ -97,4 +110,14 @@ enum RequestStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String
+  senderId   Int
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId Int
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  createdAt  DateTime @default(now())
 }

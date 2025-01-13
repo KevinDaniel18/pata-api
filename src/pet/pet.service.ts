@@ -86,4 +86,61 @@ export class PetService {
       where: { id: petId },
     });
   }
+
+  async likePet(petId: number, userId: number) {
+    try {
+      const existingLike = await this.prisma.petLike.findFirst({
+        where: { petId, userId },
+      });
+
+      if (existingLike) {
+        throw new Error('User already liked this comment.');
+      }
+
+      await this.prisma.petLike.create({
+        data: { petId, userId },
+      });
+
+      const updatePet = await this.prisma.pet.update({
+        where: { id: petId },
+        data: { likes: { increment: 1 } },
+      });
+
+      return updatePet;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async unlikePet(petId: number, userId: number) {
+    try {
+      const existingLike = await this.prisma.petLike.findFirst({
+        where: { petId, userId },
+      });
+
+      if (!existingLike) {
+        throw new Error('User has not liked this comment.');
+      }
+
+      await this.prisma.petLike.delete({
+        where: { id: existingLike.id },
+      });
+
+      const updatePet = await this.prisma.pet.update({
+        where: { id: petId },
+        data: { likes: { decrement: 1 } },
+      });
+
+      return updatePet;
+    } catch (error) {
+      throw new Error(error.message || 'Failed to unlike comment.');
+    }
+  }
+
+  async hasUserLiked(petId: number, userId: number) {
+    const like = await this.prisma.petLike.findFirst({
+      where: { petId, userId },
+    });
+    return Boolean(like);
+  }
 }

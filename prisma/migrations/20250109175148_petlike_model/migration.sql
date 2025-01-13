@@ -1,0 +1,15 @@
+-- CreateTable
+CREATE TABLE "PetLike" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "petId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "PetLike_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "PetLike" ADD CONSTRAINT "PetLike_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PetLike" ADD CONSTRAINT "PetLike_petId_fkey" FOREIGN KEY ("petId") REFERENCES "Pet"("id") ON DELETE CASCADE ON UPDATE CASCADE;

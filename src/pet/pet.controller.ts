@@ -61,4 +61,24 @@ export class PetController {
   ) {
     return this.petService.deleteAdoption(Number(petId), req.user.id);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/like')
+  async likePet(@Param('id', ParseIntPipe) petId: number, @Request() req: any) {
+    return this.petService.likePet(petId, req.user.id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/unlike')
+  async unlikePet(@Param('id', ParseIntPipe) petId: number, @Request() req: any) {
+    return this.petService.unlikePet(petId, req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/liked')
+  async hasUserLiked(
+    @Param('id', ParseIntPipe) petId: number,
+    @Request() req: any,
+  ) {
+    return this.petService.hasUserLiked(petId, req.user.id);
+  }
 }

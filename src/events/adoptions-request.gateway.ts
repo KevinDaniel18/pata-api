@@ -12,7 +12,7 @@ import { NotificationsService } from 'src/notifications/notifications.service';
 
 @WebSocketGateway({
   cors: {
-    origin: '*', // Ajusta el CORS según sea necesario
+    origin: '*',
   },
 })
 export class AdoptionRequestGateway
